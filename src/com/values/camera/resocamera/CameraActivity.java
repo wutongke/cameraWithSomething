@@ -81,6 +81,7 @@ public class CameraActivity extends Activity implements
 	private ConnectivityManager connectivityManager;
 	private NetworkInfo info;
 	private NotificationManager notificationManager;
+	private LocationManager lm;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,7 @@ public class CameraActivity extends Activity implements
 		registerReceiver(mReceiver, mFilter);
 
 		uiHandler = new Handler() {
+			@SuppressLint("SdCardPath")
 			@Override
 			public void handleMessage(Message msg) {
 				// TODO Auto-generated method stub
@@ -105,10 +107,6 @@ public class CameraActivity extends Activity implements
 				case SAVE_SUCCEED:
 					Toast.makeText(mContext, "照片保存成功", Toast.LENGTH_SHORT)
 							.show();
-					mContext.sendBroadcast(new Intent(
-							Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
-									+ Environment.getExternalStorageDirectory()
-									+ "MyCamera")));
 					break;
 				default:
 					break;
@@ -128,8 +126,15 @@ public class CameraActivity extends Activity implements
 		initViews();
 		// showDCIM();
 		// 获取位置信息
-		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		// 返回所有已知的位置提供者的名称列表，包括未获准访问或调用活动目前已停用的。
+		
+
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 		List<String> lp = lm.getAllProviders();
 		for (String item : lp) {
 			Log.i("8023", "可用位置服务：" + item);
@@ -151,9 +156,7 @@ public class CameraActivity extends Activity implements
 			Toast.makeText(this, "1.请检查网络连接 \n2.请打开我的位置", Toast.LENGTH_SHORT)
 					.show();
 		}
-
 	}
-
 	private final LocationListener locationListener = new LocationListener() {
 		public void onLocationChanged(Location location) {
 			setNewLocate(location);
@@ -180,7 +183,7 @@ public class CameraActivity extends Activity implements
 						longitude, 1);
 				if (addresses.size() > 0) {
 					String myLoate = addresses.get(0).getAddressLine(0);
-					locateView.setText("当前位置" + myLoate);
+					locateView.setText("当前位置：" + myLoate);
 					cameraView.setLocate(myLoate);
 				}
 			} catch (IOException e) {
@@ -277,6 +280,9 @@ public class CameraActivity extends Activity implements
 		super.onPause();
 		if (cameraView != null)
 			cameraView.onPause();
+		if(lm!=null){
+			lm.removeUpdates(locationListener);
+		}
 	}
 
 	@Override

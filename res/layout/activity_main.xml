@@ -84,15 +84,14 @@
     <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         android:background="#4e5051" 
         android:layout_weight="1">
 
          <TextView 
             android:id="@+id/locate"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
+            android:layout_height="18dp"
             android:text="正在获取地址.."
             android:textSize="15dp"
             android:gravity="right"

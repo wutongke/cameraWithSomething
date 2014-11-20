@@ -77,8 +77,9 @@ public class CameraView implements SurfaceHolder.Callback,
 	private int zoomFlag = 0;
 
 	private SurfaceView surfaceView;
+	@SuppressLint("SdCardPath")
 	public String PATH_DIR = Environment.getExternalStorageDirectory()
-			+ "/MyCamera/";
+			+ "/sdcard/MyCamera/";
 	private String PATH_FILE;
 
 	private String dirPath;
@@ -444,7 +445,7 @@ public class CameraView implements SurfaceHolder.Callback,
 
 						context.sendBroadcast(new Intent(
 								Intent.ACTION_MEDIA_MOUNTED, Uri
-										.parse("file://" + PATH_FILE)));
+										.parse("file://" + PATH_DIR)));
 						if (onCameraSelectListener != null) {
 							onCameraSelectListener.onTakePicture(true,
 									PATH_FILE);
