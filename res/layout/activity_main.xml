@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rl_top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#4e5051" 
+        android:layout_weight="1"
+        >
+
+        <ImageButton
+            android:id="@+id/ib_camera_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/camera_change" />
+
+        <ImageButton
+            android:id="@+id/ib_camera_flash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:layout_toLeftOf="@+id/ib_camera_change"
+            android:background="@drawable/camera_flash_auto" />
+
+        <ImageButton
+            android:id="@+id/ib_camera_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:layout_toLeftOf="@+id/ib_camera_flash"
+            android:background="@drawable/camera_grid_normal" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        android:layout_weight="1"
+        >
+
+        <RelativeLayout android:id="@+id/rl_camera" 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            
+
+            <SurfaceView
+                android:id="@+id/sf_camera"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.values.camera.widget.FocusView
+                android:id="@+id/sf_focus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/sf_camera"
+                android:layout_alignLeft="@+id/sf_camera"
+                android:layout_alignRight="@+id/sf_camera"
+                android:layout_alignTop="@+id/sf_camera" />
+
+            <ImageView
+                android:id="@+id/img_grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/sf_camera"
+                android:layout_alignLeft="@+id/sf_camera"
+                android:layout_alignRight="@+id/sf_camera"
+                android:layout_alignTop="@+id/sf_camera"
+                android:background="@drawable/grid"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#4e5051" 
+        android:layout_weight="1">
+
+        <ImageButton
+            android:id="@+id/ib_camera_take_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/camera_take_picture" />
+
+        <TextView 
+            android:id="@+id/locate"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:text="正在获取地址。。"
+            android:textSize="15dp"
+            android:gravity="right"
+            />
+    </RelativeLayout>
+
+</LinearLayout>
