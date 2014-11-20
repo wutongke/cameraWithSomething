@@ -1,5 +1,6 @@
 package com.values.camera.resocamera;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,6 +19,7 @@ import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
@@ -132,24 +134,60 @@ public class CameraActivity extends Activity implements
 		for (String item : lp) {
 			Log.i("8023", "可用位置服务：" + item);
 		}
-
 		Criteria criteria = new Criteria();
 		criteria.setCostAllowed(false);
 		// 设置位置服务免费
-		criteria.setAccuracy(Criteria.ACCURACY_COARSE); 
+		criteria.setAccuracy(Criteria.ACCURACY_COARSE);
 		// getBestProvider 只有允许访问调用活动的位置供应商将被返回
 		String providerName = lm.getBestProvider(criteria, true);
 
 		if (providerName != null) {
 			Location location = lm.getLastKnownLocation(providerName);
-			Log.i("8023", "-------" + location);
-			// 获取维度信息
-			
+			setNewLocate(location);
+			lm.requestLocationUpdates(providerName, 1005, 5000,
+					locationListener);
+
 		} else {
 			Toast.makeText(this, "1.请检查网络连接 \n2.请打开我的位置", Toast.LENGTH_SHORT)
 					.show();
 		}
 
+	}
+
+	private final LocationListener locationListener = new LocationListener() {
+		public void onLocationChanged(Location location) {
+			setNewLocate(location);
+		}
+
+		public void onProviderDisabled(String provider) {
+		}
+
+		public void onProviderEnabled(String provider) {
+		}
+
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
+	};
+
+	private void setNewLocate(Location location) {
+		// 获取维度信息
+		if (location != null) {
+			double latitude = location.getLatitude();
+			double longitude = location.getLongitude();
+			Geocoder gc = new Geocoder(mContext, Locale.getDefault());
+			try {
+				List<Address> addresses = gc.getFromLocation(latitude,
+						longitude, 1);
+				if (addresses.size() > 0) {
+					String myLoate = addresses.get(0).getAddressLine(0);
+					locateView.setText("当前位置" + myLoate);
+					cameraView.setLocate(myLoate);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void initViews() {

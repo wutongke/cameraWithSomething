@@ -30,9 +30,12 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class CameraView implements SurfaceHolder.Callback,
@@ -49,8 +52,8 @@ public class CameraView implements SurfaceHolder.Callback,
 	public static final int MODE16T9 = 169;
 
 	private int currentMODE = MODE4T3;
-	private String locate;
-	private String data;
+	private String locate = "未知位置";
+	private String nowTime = "未知时间";
 
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
@@ -160,7 +163,7 @@ public class CameraView implements SurfaceHolder.Callback,
 	}
 
 	public void setData(String data) {
-		this.data = data;
+		this.nowTime = data;
 	}
 
 	@Override
@@ -356,13 +359,18 @@ public class CameraView implements SurfaceHolder.Callback,
 		}
 	}
 
+	@SuppressLint("SimpleDateFormat")
 	@Override
 	public void onPictureTaken(final byte[] data, final Camera camera) {
 		try {
 			if (dirPath != null && !dirPath.equals("")) {
 				PATH_DIR = dirPath;
 			}
-			PATH_FILE = PATH_DIR + "IMG_" + System.currentTimeMillis() + ".jpg";
+			long time = System.currentTimeMillis();
+			PATH_FILE = PATH_DIR + "IMG_" + time + ".jpg";
+			Date d = new Date(time);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			nowTime = sdf.format(d);
 			createFolder(PATH_DIR);
 			createFile(PATH_FILE);
 			new Thread(new Runnable() {
@@ -396,13 +404,13 @@ public class CameraView implements SurfaceHolder.Callback,
 					Path pathLocate = new Path(); // 定义一条路径
 		            pathLocate.moveTo(width-200, height-100); 
 		            pathLocate.lineTo(width-200,100);
-					canvasTemp.drawTextOnPath("第三周，声明与初始化", pathLocate, 0, 0,
+					canvasTemp.drawTextOnPath("地点："+locate, pathLocate, 0, 0,
 							textPaint);
 					
 					Path pathData = new Path(); // 定义一条路径
 					pathData.moveTo(width-50, height-100); 
 					pathData.lineTo(width-50,100);
-					canvasTemp.drawTextOnPath("第三周，声明与初始化", pathData, 0, 0,
+					canvasTemp.drawTextOnPath("时间："+nowTime, pathData, 0, 0,
 							textPaint);
 					
 					canvasTemp.save(Canvas.ALL_SAVE_FLAG);

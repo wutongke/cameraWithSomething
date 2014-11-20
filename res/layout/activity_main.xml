@@ -88,22 +88,22 @@
         android:background="#4e5051" 
         android:layout_weight="1">
 
+         <TextView 
+            android:id="@+id/locate"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:text="正在获取地址.."
+            android:textSize="15dp"
+            android:gravity="right"
+            />
         <ImageButton
+            android:layout_below="@+id/locate"
             android:id="@+id/ib_camera_take_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@drawable/camera_take_picture" />
-
-        <TextView 
-            android:id="@+id/locate"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:text="正在获取地址。。"
-            android:textSize="15dp"
-            android:gravity="right"
-            />
     </RelativeLayout>
 
 </LinearLayout>
