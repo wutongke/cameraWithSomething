@@ -405,13 +405,13 @@ public class CameraView implements SurfaceHolder.Callback,
 					Path pathLocate = new Path(); // 定义一条路径
 		            pathLocate.moveTo(width-200, height-100); 
 		            pathLocate.lineTo(width-200,100);
-					canvasTemp.drawTextOnPath("地点："+locate, pathLocate, 0, 0,
+					canvasTemp.drawTextOnPath("Location："+locate, pathLocate, 0, 0,
 							textPaint);
 					
 					Path pathData = new Path(); // 定义一条路径
 					pathData.moveTo(width-50, height-100); 
 					pathData.lineTo(width-50,100);
-					canvasTemp.drawTextOnPath("时间："+nowTime, pathData, 0, 0,
+					canvasTemp.drawTextOnPath("Time："+nowTime, pathData, 0, 0,
 							textPaint);
 					
 					canvasTemp.save(Canvas.ALL_SAVE_FLAG);
@@ -444,7 +444,8 @@ public class CameraView implements SurfaceHolder.Callback,
 						bitmap.recycle();
 
 						context.sendBroadcast(new Intent(
-								Intent.ACTION_MEDIA_MOUNTED, Uri
+//								Intent.ACTION_MEDIA_MOUNTED, Uri
+								Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri
 										.parse("file://" + PATH_DIR)));
 						if (onCameraSelectListener != null) {
 							onCameraSelectListener.onTakePicture(true,

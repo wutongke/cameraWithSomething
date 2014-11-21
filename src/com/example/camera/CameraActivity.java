@@ -25,6 +25,7 @@ import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -115,12 +116,20 @@ public class CameraActivity extends Activity implements
 				super.handleMessage(msg);
 				switch (msg.what) {
 				case SAVE_SUCCEED:
-					Toast.makeText(mContext, "照片保存成功", Toast.LENGTH_SHORT)
+					Toast.makeText(CameraActivity.this, "照片保存成功", Toast.LENGTH_SHORT)
 							.show();
+					int sysVersion = Integer.parseInt(VERSION.SDK);
+					if (sysVersion < 19) {
+						sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+								Uri
+								.parse("file://"
+										+ Environment
+												.getExternalStorageDirectory()
+										+ "/sdcard/MyCamera/")));
+					}
 					break;
 				case FAILURE:
-					Toast.makeText(mContext, "拍摄失败", Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(mContext, "拍摄失败", Toast.LENGTH_SHORT).show();
 					break;
 				default:
 					break;
@@ -141,7 +150,6 @@ public class CameraActivity extends Activity implements
 		// showDCIM();
 		// 获取位置信息
 		lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		// 返回所有已知的位置提供者的名称列表，包括未获准访问或调用活动目前已停用的。
 
 	}
 
@@ -149,15 +157,25 @@ public class CameraActivity extends Activity implements
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		String providerName;
+
 		if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
 			lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
 					locationListener);
-		}else if(lm.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)){
+			providerName = LocationManager.NETWORK_PROVIDER;
+		} else if (lm.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
 			lm.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0,
 					locationListener);
+			providerName = LocationManager.PASSIVE_PROVIDER;
+		} else {
+			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
+					locationListener);
+			providerName = LocationManager.GPS_PROVIDER;
 		}
-		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
-				locationListener);
+		Location location = lm.getLastKnownLocation(providerName);
+		if (location != null) {
+			setNewLocate(location);
+		}
 		// new Thread(new Runnable() {
 		//
 		// @Override
@@ -196,15 +214,15 @@ public class CameraActivity extends Activity implements
 
 	private final LocationListener locationListener = new LocationListener() {
 		public void onLocationChanged(final Location location) {
-			setNewLocate(location);
-//			uiHandler.post(new Runnable() {
-//
-//				@Override
-//				public void run() {
-//					// TODO Auto-generated method stub
-//					setNewLocate(location);
-//				}
-//			});
+			// setNewLocate(location);
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					setNewLocate(location);
+				}
+			});
 		}
 
 		public void onProviderDisabled(String provider) {
@@ -228,7 +246,7 @@ public class CameraActivity extends Activity implements
 						longitude, 1);
 				if (addresses.size() > 0) {
 					String myLoate = addresses.get(0).getAddressLine(0);
-					locateView.setText("当前位置：" + myLoate);
+					locateView.setText("Location：" + myLoate);
 					cameraView.setLocate(myLoate);
 				}
 			} catch (IOException e) {
@@ -328,6 +346,7 @@ public class CameraActivity extends Activity implements
 		if (lm != null) {
 			lm.removeUpdates(locationListener);
 		}
+		unregisterReceiver(mReceiver);
 	}
 
 	@Override
@@ -373,7 +392,7 @@ public class CameraActivity extends Activity implements
 
 		if (success) {
 			uiHandler.sendEmptyMessage(SAVE_SUCCEED);
-		}else{
+		} else {
 			uiHandler.sendEmptyMessage(FAILURE);
 		}
 	}
