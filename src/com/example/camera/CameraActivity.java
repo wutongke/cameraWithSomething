@@ -80,6 +80,7 @@ public class CameraActivity extends Activity implements
 	private Handler uiHandler;
 	private static final int SAVE_SUCCEED = 1;
 	private static final int NEWLOCATE = 2;
+	private static final int FAILURE = 3;
 
 	private ConnectivityManager connectivityManager;
 	private NetworkInfo info;
@@ -117,6 +118,10 @@ public class CameraActivity extends Activity implements
 					Toast.makeText(mContext, "照片保存成功", Toast.LENGTH_SHORT)
 							.show();
 					break;
+				case FAILURE:
+					Toast.makeText(mContext, "拍摄失败", Toast.LENGTH_SHORT)
+							.show();
+					break;
 				default:
 					break;
 				}
@@ -144,50 +149,62 @@ public class CameraActivity extends Activity implements
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				List<String> lp = lm.getAllProviders();
-				Criteria criteria = new Criteria();
-				criteria.setCostAllowed(false);
-				// 设置位置服务免费
-				criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-				// getBestProvider 只有允许访问调用活动的位置供应商将被返回
-				final String providerName = lm.getBestProvider(criteria, true);
-
-				if (providerName != null) {
-					final Location location = lm.getLastKnownLocation(providerName);
-					uiHandler.post(new Runnable() {
-						
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							setNewLocate(location);
-							lm.requestLocationUpdates(providerName, 1005, 5000,
-									locationListener);
-						}
-					});
-					
-
-				} 
-			}
-
-		}).start();
+		if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+			lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
+					locationListener);
+		}else if(lm.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)){
+			lm.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 0, 0,
+					locationListener);
+		}
+		lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
+				locationListener);
+		// new Thread(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// // TODO Auto-generated method stub
+		// // List<String> lp = lm.getAllProviders();
+		// // Criteria criteria = new Criteria();
+		// // criteria.setCostAllowed(false);
+		// // // 设置位置服务免费
+		// // criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+		// // // getBestProvider 只有允许访问调用活动的位置供应商将被返回
+		// // final String providerName = lm.getBestProvider(criteria, true);
+		// // final String provider = LocationManager.NETWORK_PROVIDER;
+		//
+		// // if (providerName != null) {
+		// // final Location location = lm.getLastKnownLocation(providerName);
+		// // uiHandler.post(new Runnable() {
+		// //
+		// // @Override
+		// // public void run() {
+		// // // TODO Auto-generated method stub
+		// // setNewLocate(location);
+		// // lm.requestLocationUpdates(providerName, 1005, 5000,
+		// // locationListener);
+		// // lm.requestLocationUpdates(provider, 1005, 500,
+		// locationNetworkListener);
+		// // }
+		// // });
+		// //
+		// //
+		// // }
+		// }
+		//
+		// }).start();
 	}
 
 	private final LocationListener locationListener = new LocationListener() {
 		public void onLocationChanged(final Location location) {
-			uiHandler.post(new Runnable() {
-				
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					setNewLocate(location);
-				}
-			});
+			setNewLocate(location);
+//			uiHandler.post(new Runnable() {
+//
+//				@Override
+//				public void run() {
+//					// TODO Auto-generated method stub
+//					setNewLocate(location);
+//				}
+//			});
 		}
 
 		public void onProviderDisabled(String provider) {
@@ -354,7 +371,11 @@ public class CameraActivity extends Activity implements
 		// sd/ResoCamera/(file)
 		Log.i("111", "1111111");
 
-		uiHandler.sendEmptyMessage(SAVE_SUCCEED);
+		if (success) {
+			uiHandler.sendEmptyMessage(SAVE_SUCCEED);
+		}else{
+			uiHandler.sendEmptyMessage(FAILURE);
+		}
 	}
 
 	@Override

@@ -458,6 +458,7 @@ public class CameraView implements SurfaceHolder.Callback,
 						if (onCameraSelectListener != null) {
 							onCameraSelectListener.onTakePicture(false, null);
 						}
+						openCamera();
 					}
 					System.gc();
 				}
