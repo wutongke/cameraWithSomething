@@ -1,4 +1,4 @@
-package com.values.camera.widget;
+package com.example.camera.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;

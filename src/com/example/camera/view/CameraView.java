@@ -1,4 +1,4 @@
-package com.values.camera.widget;
+package com.example.camera.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -370,7 +370,7 @@ public class CameraView implements SurfaceHolder.Callback,
 			long time = System.currentTimeMillis();
 			PATH_FILE = PATH_DIR + "IMG_" + time + ".jpg";
 			Date d = new Date(time);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 			nowTime = sdf.format(d);
 			createFolder(PATH_DIR);
 			createFile(PATH_FILE);
