@@ -43,7 +43,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.camera.R;
+import com.examaple.camera.R;
 import com.example.camera.view.CameraView;
 import com.example.camera.view.FocusView;
 
@@ -78,9 +78,8 @@ public class CameraActivity extends Activity implements
 	private TextView locateView;
 
 	private ImageView imgGrid;
-	private Handler uiHandler;
+	private  Handler uiHandler;
 	private static final int SAVE_SUCCEED = 1;
-	private static final int NEWLOCATE = 2;
 	private static final int FAILURE = 3;
 
 	private ConnectivityManager connectivityManager;
@@ -88,6 +87,7 @@ public class CameraActivity extends Activity implements
 	private NotificationManager notificationManager;
 	private LocationManager lm;
 
+	@SuppressLint("HandlerLeak")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -116,14 +116,20 @@ public class CameraActivity extends Activity implements
 				super.handleMessage(msg);
 				switch (msg.what) {
 				case SAVE_SUCCEED:
-					Toast.makeText(CameraActivity.this, "照片保存成功", Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(CameraActivity.this, "照片保存成功",
+							Toast.LENGTH_SHORT).show();
 					int sysVersion = Integer.parseInt(VERSION.SDK);
 					if (sysVersion < 19) {
 						sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
-								Uri
-								.parse("file://"
+								Uri.parse("file://"
 										+ Environment
+												.getExternalStorageDirectory()
+										+ "/sdcard/MyCamera/")));
+					} else {
+						sendBroadcast(new Intent(
+						// Intent.ACTION_MEDIA_MOUNTED, Uri
+								Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri
+										.parse("file://" + Environment
 												.getExternalStorageDirectory()
 										+ "/sdcard/MyCamera/")));
 					}

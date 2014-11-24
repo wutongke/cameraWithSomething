@@ -25,6 +25,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -52,8 +53,8 @@ public class CameraView implements SurfaceHolder.Callback,
 	public static final int MODE16T9 = 169;
 
 	private int currentMODE = MODE4T3;
-	private String locate = "未知位置";
-	private String nowTime = "未知时间";
+	private String locate = "Unkonwn Locate";
+	private String nowTime = "Unkonwn time";
 
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
@@ -140,6 +141,7 @@ public class CameraView implements SurfaceHolder.Callback,
 		mHolder.addCallback(this);
 		mHolder.setKeepScreenOn(true);
 		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+		// callfor Pemission
 	}
 
 	/**
@@ -186,7 +188,6 @@ public class CameraView implements SurfaceHolder.Callback,
 		closeCamera();
 	}
 
-	@SuppressLint("NewApi")
 	private void openCamera() {
 		try {
 			closeCamera();
@@ -197,6 +198,9 @@ public class CameraView implements SurfaceHolder.Callback,
 			setCameraPreviewSize();
 			changeFlash(flash_type);
 			mCamera.startPreview();
+			if (!context.getPackageName().equals("com.examaple.camera")) {
+				closeCamera();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -401,19 +405,19 @@ public class CameraView implements SurfaceHolder.Callback,
 					textPaint.setTextSize(100.0f);
 					textPaint.setTypeface(Typeface.DEFAULT_BOLD); // 采用默认的宽度
 					textPaint.setColor(Color.WHITE);
-					
+
 					Path pathLocate = new Path(); // 定义一条路径
-		            pathLocate.moveTo(width-200, height-100); 
-		            pathLocate.lineTo(width-200,100);
-					canvasTemp.drawTextOnPath("Location："+locate, pathLocate, 0, 0,
-							textPaint);
-					
+					pathLocate.moveTo(width - 200, height - 100);
+					pathLocate.lineTo(width - 200, 100);
+					canvasTemp.drawTextOnPath("Location：" + locate, pathLocate,
+							0, 0, textPaint);
+
 					Path pathData = new Path(); // 定义一条路径
-					pathData.moveTo(width-50, height-100); 
-					pathData.lineTo(width-50,100);
-					canvasTemp.drawTextOnPath("Time："+nowTime, pathData, 0, 0,
-							textPaint);
-					
+					pathData.moveTo(width - 50, height - 100);
+					pathData.lineTo(width - 50, 100);
+					canvasTemp.drawTextOnPath("Time：" + nowTime, pathData, 0,
+							0, textPaint);
+
 					canvasTemp.save(Canvas.ALL_SAVE_FLAG);
 					canvasTemp.restore();
 					bitmap = tempBitmap;
@@ -442,11 +446,6 @@ public class CameraView implements SurfaceHolder.Callback,
 						bos.flush();
 						bos.close();
 						bitmap.recycle();
-
-						context.sendBroadcast(new Intent(
-//								Intent.ACTION_MEDIA_MOUNTED, Uri
-								Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri
-										.parse("file://" + PATH_DIR)));
 						if (onCameraSelectListener != null) {
 							onCameraSelectListener.onTakePicture(true,
 									PATH_FILE);
@@ -697,7 +696,6 @@ public class CameraView implements SurfaceHolder.Callback,
 
 		public void onShake(int orientation);
 	}
-
 	public static class CameraSizeComparator implements Comparator<Camera.Size> {
 		public int compare(Camera.Size lhs, Camera.Size rhs) {
 			if (lhs.width == rhs.width) {

@@ -1,5 +1,5 @@
 /** Automatically generated file. DO NOT MODIFY */
-package com.example.camera;
+package com.examaple.camera;
 
 public final class BuildConfig {
     public final static boolean DEBUG = true;
