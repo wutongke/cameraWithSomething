@@ -79,7 +79,7 @@ public class CameraView implements SurfaceHolder.Callback,
 
 	private SurfaceView surfaceView;
 	@SuppressLint("SdCardPath")
-	public String PATH_DIR = Environment.getExternalStorageDirectory()
+	public static String PATH_DIR = Environment.getExternalStorageDirectory()
 			+ "/sdcard/MyCamera/";
 	private String PATH_FILE;
 

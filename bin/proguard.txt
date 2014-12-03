@@ -1,6 +1,9 @@
 # view AndroidManifest.xml #generated:29
 -keep class com.example.camera.CameraActivity { <init>(...); }
 
+# view AndroidManifest.xml #generated:39
+-keep class com.example.camera.PictureShowActivity { <init>(...); }
+
 # view res/layout/activity_main.xml #generated:58
 -keep class com.example.camera.view.FocusView { <init>(...); }
 
